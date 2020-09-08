@@ -14,6 +14,10 @@
     "directories": {
       "output": "electron-app"
     },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
     "linux": {
       "target": [
         "deb"
