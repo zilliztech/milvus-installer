@@ -1,7 +1,12 @@
 {
-  "name": "your-app",
-  "version": "0.1.0",
+  "name": "milvus-installer",
+  "version": "0.0.1",
   "main": "main.js",
+  "author": {
+    "name": "ryjiang",
+    "email": "ruiyi.jiang@zilliz.com",
+    "url": "https://www.milvus.io"
+  },
   "scripts": {
     "start": "electron ."
   },
