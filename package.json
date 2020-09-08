@@ -1,7 +1,9 @@
 {
   "name": "milvus-installer",
+  "description": "milvus installer",
   "version": "0.0.1",
   "main": "main.js",
+  "license": "MIT",
   "author": {
     "name": "ryjiang",
     "email": "ruiyi.jiang@zilliz.com",
@@ -13,17 +15,14 @@
       "output": "electron-app"
     },
     "linux": {
-      "icon": "./resources/icon.icns",
       "target": [
         "deb"
       ]
     },
     "mac": {
-      "icon": "./resources/icon.icns",
       "target": "dmg"
     },
     "win": {
-      "icon": "./resources/icon.png",
       "target": [
         {
           "target": "nsis"
