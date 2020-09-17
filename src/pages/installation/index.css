@@ -1,0 +1,45 @@
+.install-wrapper {
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+
+  margin-left: 88px;
+}
+
+.install-img {
+  width: 160px;
+  height: 160px;
+}
+
+.install-content {
+  margin-left: 72px;
+  height: 160px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.install-button {
+  border: 0;
+  background-color: rgb(79, 196, 249);
+  color: #fafafa;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  width: 160px;
+  height: 40px;
+}
+
+.install-button:focus {
+  outline: none;
+}
+
+.install-button:active {
+  background-color: rgb(79, 196, 249, 0.8);
+}
+
+.install-button:visited {
+  background-color: rgb(79, 196, 249);
+}

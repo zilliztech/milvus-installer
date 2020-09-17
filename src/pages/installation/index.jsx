@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import loader from '../../images/loader.png';
+import './index.css';
 // import { ipcRenderer } from 'electron';
 
 const getInstallationHintMap = () => {
@@ -40,16 +41,19 @@ const InstallationPage = () => {
   }, []);
 
   return (
-    <section>
+    <section className="install-wrapper">
       <div>
-        <img src={loader} alt="loader" />
-      </div>
-      <div>
-        <h2>Milvus Launcher</h2>
-        <p>{hintMap[installStatus]}</p>
+        <img className="install-img" src={loader} alt="loader" />
       </div>
 
-      <button>install</button>
+      <div className="install-content">
+        <div>
+          <div className="install-title">Milvus Launcher</div>
+          <div className="install-hint">{hintMap[installStatus]}</div>
+        </div>
+
+        <button className="install-button">install</button>
+      </div>
     </section>
   );
 };
