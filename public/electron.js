@@ -13,8 +13,8 @@ const docker = new Docker({ socketPath });
 function createWindow() {
   // create window
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 800,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -77,7 +77,7 @@ ipcMain.on('installMilvus', (event, args) => {
       event.sender.send('installMilvusDone', true);
     }
     function onProgress(evt) {
-      console.log('on progress', evt.progress);
+      console.log('on progress', evt.progress, 'evt', evt);
       event && event.sender.send('installMilvusProgress', evt.progress);
     }
   });
