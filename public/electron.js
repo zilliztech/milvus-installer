@@ -3,6 +3,8 @@ const Docker = require('dockerode');
 const isDev = require('electron-is-dev');
 const path = require('path');
 
+const childProcess = require('child_process')
+
 const socketPath =
   process.platform === 'win32'
     ? '//./pipe/docker_engine'
@@ -63,6 +65,13 @@ ipcMain.on('helloSync', (event, args) => {
   //do something with args
   event.returnValue = 'Hi, sync reply';
 });
+
+ipcMain.on('detectDocker', (event, args) => {
+  const command = process.platform === 'win32' ? 'where docker' :'type -p docker'
+  childProcess.exec(command, (err, stdout) => {
+    event.sender.send('dockerInstalled', !!err)
+  })
+})
 
 const repoTag = 'milvusdb/milvus:0.10.2-cpu-d081520-8a2393';
 

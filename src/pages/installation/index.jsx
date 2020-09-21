@@ -15,6 +15,11 @@ const getInstallationHintMap = () => {
   return map;
 };
 
+const detectDocker = () => {
+  const { ipcRenderer } = window.require('electron');
+  ipcRenderer.send('detectDocker', 'start');
+}
+
 const InstallationPage = () => {
   const history = useHistory();
 
@@ -28,7 +33,8 @@ const InstallationPage = () => {
       mode: 'no-cors',
     })
       .then(() => {
-        setInstallStatus('checked');
+        detectDocker()
+        monitorDockerInstallation()
       })
       .catch((e) => {
         alert('There is something wrong with your Internet');
@@ -44,7 +50,19 @@ const InstallationPage = () => {
       window.removeEventListener('offline', detectNetwork);
       window.removeEventListener('online', detectNetwork);
     };
+    // eslint-disable-next-line
   }, []);
+
+  const monitorDockerInstallation = () => {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.on('dockerInstalled', (event, args) => {
+      if (!args) {
+        setInstallStatus('checked')
+      } else {
+        alert('Please install Docker first')
+      }
+    })
+  }
 
   const monitorInstallationProgress = (ipcRenderer) => {
     ipcRenderer.on('installMilvusProgress', (event, args) => {
@@ -62,7 +80,6 @@ const InstallationPage = () => {
     ipcRenderer.send('installMilvus', 'start');
 
     setInstallStatus('installing');
-
     monitorInstallationProgress(ipcRenderer);
   };
 
