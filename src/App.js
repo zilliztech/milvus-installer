@@ -1,5 +1,8 @@
 import React from 'react';
 import InstallationPage from './pages/installation';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { CONFIG_ROUTE, INSTALL_ROUTE } from './shared/constants';
+import ConfigurationPage from './pages/configuration';
 
 function App() {
   // const { ipcRenderer } = window.require('electron');
@@ -25,6 +28,16 @@ function App() {
 
   return (
     <>
+      <Router>
+        <Switch>
+          <Route exact path={INSTALL_ROUTE}>
+            <InstallationPage />
+          </Route>
+          <Route path={CONFIG_ROUTE}>
+            <ConfigurationPage />
+          </Route>
+        </Switch>
+      </Router>
       {/* <h1>Milvus 0.10.2 Installer</h1>
       <button className="install-btn">Install Milvus</button>
       <div>
@@ -33,7 +46,6 @@ function App() {
           style={{ width: '600px', height: '600px' }}
         ></textarea>
       </div> */}
-      <InstallationPage />
     </>
   );
 }

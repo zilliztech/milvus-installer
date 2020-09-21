@@ -1,0 +1,84 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.install-wrapper {
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+
+  margin-left: 88px;
+}
+
+.install-img {
+  width: 160px;
+  height: 160px;
+}
+
+.install-img-spin {
+  width: 160px;
+  height: 160px;
+
+  animation-name: spin;
+  animation-duration: 1500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.install-title {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 48px;
+
+  font-family: Roboto-Bold, Roboto;
+}
+
+.install-hint {
+  font-size: 18px;
+
+  font-family: Roboto-Regular, Roboto;
+}
+
+.install-content {
+  margin-left: 72px;
+  height: 160px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.install-button {
+  width: 160px;
+  height: 40px;
+
+  border: 0;
+  background-color: rgb(79, 196, 249);
+  color: #fafafa;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.install-button:disabled {
+  background-color: rgba(79, 196, 249, 0.5);
+  cursor: not-allowed;
+}
+
+.install-button:focus {
+  outline: none;
+}
+
+.install-button:active {
+  background-color: rgb(79, 196, 249, 0.8);
+}
+
+.install-button:visited {
+  background-color: rgb(79, 196, 249);
+}
