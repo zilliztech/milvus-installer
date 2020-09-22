@@ -59,7 +59,7 @@ ipcMain.handle('perform-action', (event, ...args) => {
   console.log('perform-action', event, ...args);
 });
 
-//Receive and reply to synchronous message
+// Receive and reply to synchronous message
 ipcMain.on('helloSync', (event, args) => {
   console.log('helloSync', event, ...args);
   //do something with args
@@ -74,6 +74,19 @@ ipcMain.on('detectDocker', (event, args) => {
 })
 
 const repoTag = 'milvusdb/milvus:0.10.2-cpu-d081520-8a2393';
+
+ipcMain.on('detectMilvus', (event, args) => {
+  docker
+    .listImages()
+    .then((data) => {
+      const milvus = data.find((item) => item.RepoTags.includes(repoTag));
+      event.sender.send('milvusInstallation', !!milvus);
+    })
+    .catch((err) => {
+      event.sender.send('milvusInstallation', false);
+      throw err;
+    });
+});
 
 //Receive and reply to asynchronous message
 ipcMain.on('installMilvus', (event, args) => {

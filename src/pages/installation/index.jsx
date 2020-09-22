@@ -41,6 +41,13 @@ const InstallationPage = () => {
       });
   };
 
+  const detectMilvus = () => {
+    const { ipcRenderer } = window.require('electron')
+    ipcRenderer.send('detectMilvus', 'start')
+
+    monitorMilvusInstallation()
+  }
+
   useEffect(() => {
     detectNetwork();
     window.addEventListener('offline', detectNetwork);
@@ -57,9 +64,21 @@ const InstallationPage = () => {
     const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('dockerInstalled', (event, args) => {
       if (!args) {
-        setInstallStatus('checked')
+        detectMilvus()
       } else {
         alert('Please install Docker first')
+      }
+    })
+  }
+
+  const monitorMilvusInstallation = () => {
+    const { ipcRenderer } = window.require('electron')
+    ipcRenderer.on('milvusInstallation', (event, args) => {
+      // milvus already installed, go to config page
+      if (args) {
+        history.push('/config');
+      } else {
+        setInstallStatus('checked')
       }
     })
   }
