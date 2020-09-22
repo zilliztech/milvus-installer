@@ -3,7 +3,7 @@ const Docker = require('dockerode');
 const isDev = require('electron-is-dev');
 const path = require('path');
 
-const childProcess = require('child_process')
+const childProcess = require('child_process');
 
 const socketPath =
   process.platform === 'win32'
@@ -67,11 +67,12 @@ ipcMain.on('helloSync', (event, args) => {
 });
 
 ipcMain.on('detectDocker', (event, args) => {
-  const command = process.platform === 'win32' ? 'where docker' :'type -p docker'
+  const command =
+    process.platform === 'win32' ? 'where docker' : 'type -p docker';
   childProcess.exec(command, (err, stdout) => {
-    event.sender.send('dockerInstalled', !!err)
-  })
-})
+    event.sender.send('dockerInstalled', !!err);
+  });
+});
 
 const repoTag = 'milvusdb/milvus:0.10.2-cpu-d081520-8a2393';
 
@@ -91,16 +92,19 @@ ipcMain.on('detectMilvus', (event, args) => {
 //Receive and reply to asynchronous message
 ipcMain.on('installMilvus', (event, args) => {
   docker.pull(repoTag, function (err, stream) {
+    if (err) {
+      const errInfo = JSON.stringify(err, null, 2);
+      event.sender.send('installMilvusError', errInfo);
+    }
+
     event.sender.send('installMilvusProgress', 'start');
     docker.modem.followProgress(stream, onFinished, onProgress);
 
     function onFinished(err, output) {
-      console.log('on finished', output);
       event.sender.send('installMilvusDone', true);
     }
     function onProgress(evt) {
-      console.log('on progress', evt.progress, 'evt', evt);
-      event && event.sender.send('installMilvusProgress', evt.progress);
+      event && event.sender.send('installMilvusProgress', evt);
     }
   });
 });

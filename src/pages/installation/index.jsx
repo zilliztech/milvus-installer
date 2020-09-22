@@ -18,7 +18,7 @@ const getInstallationHintMap = () => {
 const detectDocker = () => {
   const { ipcRenderer } = window.require('electron');
   ipcRenderer.send('detectDocker', 'start');
-}
+};
 
 const InstallationPage = () => {
   const history = useHistory();
@@ -33,8 +33,8 @@ const InstallationPage = () => {
       mode: 'no-cors',
     })
       .then(() => {
-        detectDocker()
-        monitorDockerInstallation()
+        detectDocker();
+        monitorDockerInstallation();
       })
       .catch((e) => {
         alert('There is something wrong with your Internet');
@@ -42,11 +42,11 @@ const InstallationPage = () => {
   };
 
   const detectMilvus = () => {
-    const { ipcRenderer } = window.require('electron')
-    ipcRenderer.send('detectMilvus', 'start')
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('detectMilvus', 'start');
 
-    monitorMilvusInstallation()
-  }
+    monitorMilvusInstallation();
+  };
 
   useEffect(() => {
     detectNetwork();
@@ -64,33 +64,44 @@ const InstallationPage = () => {
     const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('dockerInstalled', (event, args) => {
       if (!args) {
-        detectMilvus()
+        detectMilvus();
       } else {
-        alert('Please install Docker first')
+        alert('Please install Docker first');
       }
-    })
-  }
+    });
+  };
 
   const monitorMilvusInstallation = () => {
-    const { ipcRenderer } = window.require('electron')
+    const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('milvusInstallation', (event, args) => {
       // milvus already installed, go to config page
       if (args) {
         history.push('/config');
       } else {
-        setInstallStatus('checked')
+        setInstallStatus('checked');
       }
-    })
-  }
+    });
+  };
 
   const monitorInstallationProgress = (ipcRenderer) => {
     ipcRenderer.on('installMilvusProgress', (event, args) => {
-      console.log('progress event', event, 'args', args);
+      // console.log('progress event', event, 'args', args);
     });
 
     ipcRenderer.on('installMilvusDone', (event, args) => {
       setInstallStatus('installed');
       history.push('/config');
+    });
+  };
+
+  const handleInstallError = (ipcRenderer) => {
+    ipcRenderer.on('installMilvusError', (event, args) => {
+      history.push({
+        pathname: '/error',
+        state: {
+          info: args,
+        },
+      });
     });
   };
 
@@ -100,6 +111,7 @@ const InstallationPage = () => {
 
     setInstallStatus('installing');
     monitorInstallationProgress(ipcRenderer);
+    handleInstallError(ipcRenderer);
   };
 
   return (
