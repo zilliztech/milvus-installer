@@ -3,6 +3,7 @@ const Docker = require('dockerode');
 const isDev = require('electron-is-dev');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 
 const childProcess = require('child_process');
 
@@ -67,6 +68,23 @@ ipcMain.on('helloSync', (event, args) => {
   event.returnValue = 'Hi, sync reply';
 });
 
+const moveFileToConfFolder = (dir) => {
+  const sourcePath = path.join(process.cwd(), 'public/server_config.yaml');
+  const targetPath = path.join(dir, 'server_config.yaml');
+
+  try {
+    if (!fs.existsSync(targetPath)) {
+      fs.copyFile(sourcePath, targetPath, (err) => {
+        if (err) {
+          throw err;
+        }
+      });
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
 ipcMain.on('openFolder', (event, args) => {
   const { type } = args;
   const basicPath = os.homedir();
@@ -83,6 +101,11 @@ ipcMain.on('openFolder', (event, args) => {
       const { filePaths } = result;
       if (filePaths.length > 0) {
         const [dir] = filePaths;
+
+        if (type === 'milvus/conf') {
+          moveFileToConfFolder(dir);
+        }
+
         const newConfig = {
           ...args,
           value: dir,

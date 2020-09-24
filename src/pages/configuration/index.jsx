@@ -9,6 +9,7 @@ import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import Button from '../../components/button';
 import logo from '../../images/logo.png';
 import './index.css';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
@@ -133,12 +134,15 @@ const getCreateOption = (configs) => {
 const ConfigurationPage = () => {
   const classes = useStyles();
   const [configs, setConfigs] = useState(getConfigInput());
+  const history = useHistory();
 
   const onStartButtonClick = () => {
     const { ipcRenderer } = window.require('electron');
 
-    const createConfig = getCreateOption(configs);
+    const validConfigs = configs.filter((config) => config.value);
+    const createConfig = getCreateOption(validConfigs);
     ipcRenderer.send('startMilvus', createConfig);
+    monitorStartMilvus();
   };
 
   const onFileIconClick = (config) => {
@@ -154,6 +158,24 @@ const ConfigurationPage = () => {
       );
 
       setConfigs(newConfigs);
+    });
+  };
+
+  const monitorStartMilvus = (ipcRenderer) => {
+    ipcRenderer.on('startMilvusDone', (event, isDone) => {
+      if (isDone) {
+        // move to finish page
+      }
+    });
+
+    ipcRenderer.on('startMilvusError', (event, errInfo) => {
+      // move to err page
+      history.push({
+        pathname: '/error',
+        state: {
+          info: errInfo,
+        },
+      });
     });
   };
 
