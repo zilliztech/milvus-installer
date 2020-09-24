@@ -178,3 +178,4 @@ ipcMain.on('startMilvus', (event, createConfig) => {
     }
   );
 });
+ipcMain.on('checkMilvusStart', (event, args) => {});
