@@ -1,0 +1,28 @@
+.button {
+  width: 160px;
+  height: 40px;
+
+  border: 0;
+  background-color: rgb(79, 196, 249);
+  color: #fafafa;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.button:disabled {
+  background-color: rgba(79, 196, 249, 0.5);
+  cursor: not-allowed;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button:active {
+  background-color: rgb(79, 196, 249, 0.8);
+}
+
+.button:visited {
+  background-color: rgb(79, 196, 249);
+}
