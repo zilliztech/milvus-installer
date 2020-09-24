@@ -108,3 +108,15 @@ ipcMain.on('installMilvus', (event, args) => {
     }
   });
 });
+
+ipcMain.on('stopMilvus', (event, args) => {
+  docker.listContainers((err, containers) => {
+    containers.forEach((containerInfo) => {
+      if (containerInfo.Image === repoTag) {
+        docker.getContainer(containerInfo.Id).stop(() => {
+          app.exit(0);
+        });
+      }
+    });
+  });
+});
