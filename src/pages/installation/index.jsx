@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Button from '../../components/button';
+
 import loader from '../../images/loader.png';
 import logo from '../../images/logo.png';
 import './index.css';
@@ -130,13 +132,11 @@ const InstallationPage = () => {
           <div className="install-hint">{hintMap[installStatus]}</div>
         </div>
 
-        <button
-          className="install-button"
+        <Button
+          label={installStatus === 'installing' ? 'installing' : 'install'}
+          onButtonClick={onInstallButtonClick}
           disabled={installStatus !== 'checked'}
-          onClick={onInstallButtonClick}
-        >
-          {installStatus === 'installing' ? 'installing' : 'install'}
-        </button>
+        />
       </div>
     </section>
   );
