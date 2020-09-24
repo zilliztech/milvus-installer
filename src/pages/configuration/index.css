@@ -1,0 +1,33 @@
+.config-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+}
+
+.config-image {
+  width: 144px;
+  height: 144px;
+
+  margin-right: 60px;
+}
+
+.config-main {
+  width: 320px;
+}
+
+.config-title {
+  margin: 0 0 12px 0;
+  font-family: Roboto-Bold, Roboto;
+  font-size: 40px;
+  line-height: 48px;
+}
+
+.config-form {
+  margin-bottom: 24px;
+}
+
+.config-input {
+  margin-bottom: 8px;
+}

@@ -1,7 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const Docker = require('dockerode');
 const isDev = require('electron-is-dev');
 const path = require('path');
+const os = require('os');
 
 const childProcess = require('child_process');
 
@@ -66,6 +67,35 @@ ipcMain.on('helloSync', (event, args) => {
   event.returnValue = 'Hi, sync reply';
 });
 
+ipcMain.on('openFolder', (event, args) => {
+  const { type } = args;
+  const basicPath = os.homedir();
+  const defaultPath = path.join(basicPath, type);
+
+  const dialogOption = {
+    properties: ['openDirectory'],
+    defaultPath,
+  };
+
+  dialog
+    .showOpenDialog(dialogOption)
+    .then((result) => {
+      const { filePaths } = result;
+      if (filePaths.length > 0) {
+        const [dir] = filePaths;
+        const newConfig = {
+          ...args,
+          value: dir,
+        };
+        event.sender.send('dirSelectDone', newConfig);
+      }
+    })
+    .catch((err) => {
+      const error = JSON.stringify(err, null, 2);
+      event.sender.send('dirSelectError', error);
+    });
+});
+
 ipcMain.on('detectDocker', (event, args) => {
   const command =
     process.platform === 'win32' ? 'where docker' : 'type -p docker';
@@ -107,4 +137,21 @@ ipcMain.on('installMilvus', (event, args) => {
       event && event.sender.send('installMilvusProgress', evt);
     }
   });
+});
+
+ipcMain.on('startMilvus', (event, createConfig) => {
+  docker.run(
+    repoTag,
+    [],
+    process.stdout,
+    createConfig,
+    (err, data, container) => {
+      if (!!err) {
+        const errInfo = JSON.stringify(err, null, 2);
+        event.sender.send('startMilvusError', errInfo);
+      } else {
+        event.sender.send('startMilvusDone', true);
+      }
+    }
+  );
 });

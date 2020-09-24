@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './index.css';
 import fail from '../../images/fail.png';
 import { useHistory, useLocation } from 'react-router-dom';
+import Button from '../../components/button';
 
 const ErrorPage = () => {
   const history = useHistory();
@@ -16,7 +17,7 @@ const ErrorPage = () => {
 
   const onRetryButtonClick = () => {
     // back to install page
-    history.push('/');
+    history.push('/config');
   };
 
   return (
@@ -25,9 +26,8 @@ const ErrorPage = () => {
       <div className="error-content">
         <div className="error-title">Something went wrong</div>
         <div className="error-info">{errorInfo}</div>
-        <button className="error-button" onClick={onRetryButtonClick}>
-          Try again
-        </button>
+
+        <Button label="Try again" onButtonClick={onRetryButtonClick} />
       </div>
     </section>
   );
