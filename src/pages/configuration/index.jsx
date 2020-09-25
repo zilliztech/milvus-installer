@@ -142,7 +142,7 @@ const ConfigurationPage = () => {
     const validConfigs = configs.filter((config) => config.value);
     const createConfig = getCreateOption(validConfigs);
     ipcRenderer.send('startMilvus', createConfig);
-    monitorStartMilvus();
+    monitorStartMilvus(ipcRenderer);
   };
 
   const onFileIconClick = (config) => {
@@ -165,6 +165,7 @@ const ConfigurationPage = () => {
     ipcRenderer.on('startMilvusDone', (event, isDone) => {
       if (isDone) {
         // move to finish page
+        history.push('/finish');
       }
     });
 

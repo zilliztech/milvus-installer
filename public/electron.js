@@ -169,6 +169,7 @@ ipcMain.on('startMilvus', (event, createConfig) => {
     process.stdout,
     createConfig,
     (err, data, container) => {
+      console.log('err', err, 'data', data, 'container', container);
       if (!!err) {
         const errInfo = JSON.stringify(err, null, 2);
         event.sender.send('startMilvusError', errInfo);
