@@ -23,7 +23,7 @@ jobs:
 
       - name: change package.json
         run: |
-          node changePackageJson.js milvus-gpu-launcher
+          node changePackageJson.js milvus-cpu-launcher
 
       - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1
