@@ -76,11 +76,30 @@ const InstallationPage = () => {
   const monitorMilvusInstallation = () => {
     const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('milvusInstallation', (event, args) => {
-      // milvus already installed, go to config page
+      /* 
+        1. check milvus installation
+        2. check running containers info
+        3. if already started, go to finish page, else go to config page
+      */
       if (args) {
-        history.push('/config');
+        checkWhetherMilvusStarted(ipcRenderer);
       } else {
         setInstallStatus('checked');
+      }
+    });
+  };
+
+  const checkWhetherMilvusStarted = (ipcRenderer) => {
+    ipcRenderer.send('checkMilvusStart', 'start');
+    monitorMilvusRunningStatus(ipcRenderer);
+  };
+
+  const monitorMilvusRunningStatus = (ipcRenderer) => {
+    ipcRenderer.on('checkMilvusStartDone', (event, isMilvusStart) => {
+      if (isMilvusStart) {
+        history.push('/finish');
+      } else {
+        history.push('/config');
       }
     });
   };

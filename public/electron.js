@@ -203,3 +203,23 @@ ipcMain.on('stopMilvus', (event, id) => {
     app.exit(0);
   });
 });
+
+ipcMain.on('checkMilvusStart', (event, args) => {
+  docker.listContainers((err, containers) => {
+    if (!!err) {
+      const errInfo = JSON.stringify(errInfo, null, 2);
+      event.sender.send('checkMilvusError', errInfo);
+    } else {
+      docker.listContainers((err, containers) => {
+        if (!!err) {
+          const errInfo = JSON.stringify(errInfo, null, 2);
+        }
+        const isMilvusRunning = containers.some(
+          (container) => container.Image === repoTag
+        );
+
+        event.sender.send('checkMilvusStartDone', isMilvusRunning);
+      });
+    }
+  });
+});
