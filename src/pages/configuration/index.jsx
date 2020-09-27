@@ -180,6 +180,11 @@ const ConfigurationPage = () => {
     });
   };
 
+  const onInputChange = (event, config) => {
+    const value = event.target.value;
+    config.value = value;
+  };
+
   return (
     <section className="config-wrapper">
       <img className="config-image" src={logo} alt="logo" />
@@ -188,30 +193,35 @@ const ConfigurationPage = () => {
         <form className="config-form">
           {configs.map((config) => (
             <div className="config-input" key={config.label}>
-              <TextField
-                className={classes.root}
-                label={config.label}
-                fullWidth={config.needPathIcon}
-                value={config.value}
-                InputProps={
-                  config.needPathIcon
-                    ? {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => {
-                                onFileIconClick(config);
-                              }}
-                            >
-                              <FolderOpenIcon />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                        readOnly: true,
-                      }
-                    : {}
-                }
-              />
+              {config.needPathIcon ? (
+                <TextField
+                  className={classes.root}
+                  label={config.label}
+                  fullWidth
+                  value={config.value}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => {
+                            onFileIconClick(config);
+                          }}
+                        >
+                          <FolderOpenIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                    readOnly: true,
+                  }}
+                />
+              ) : (
+                <TextField
+                  className={classes.root}
+                  label={config.label}
+                  defaultValue={config.value}
+                  onChange={(event) => onInputChange(event, config)}
+                />
+              )}
             </div>
           ))}
         </form>

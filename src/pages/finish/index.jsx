@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.css';
 import logo from '../../images/logo.png';
+import Button from '../../components/button';
 
 const FinishPage = () => {
   const versionInfo = 'Milvus 0.10.2';
-  const url = '192.168.0.2:19530';
+  const [url, setUrl] = useState('');
+  const [containerId, setContainerId] = useState('');
+
+  useEffect(() => {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('getContainerInfo', 'start');
+
+    getContainerInfo(ipcRenderer);
+  }, []);
+
+  const getContainerInfo = (ipcRenderer) => {
+    ipcRenderer.on('containerInfo', (event, container) => {
+      const {
+        Id,
+        NetworkSettings: {
+          Networks: {
+            bridge: { IPAddress },
+          },
+        },
+        Ports: [{ PublicPort }],
+      } = container;
+
+      const url = `${IPAddress}:${PublicPort}`;
+      setContainerId(Id);
+      setUrl(url);
+    });
+  };
 
   const onStopMilvusClick = () => {
-    console.log('on stop milvus click');
     const { ipcRenderer } = window.require('electron');
-    ipcRenderer.send('stopMilvus', versionInfo);
+    ipcRenderer.send('stopMilvus', containerId);
   };
 
   return (
@@ -20,7 +46,7 @@ const FinishPage = () => {
         <div>is running at</div>
         <div>{url}</div>
 
-        <button onClick={onStopMilvusClick}>Stop Milvus</button>
+        <Button label="stop Milvus" onButtonClick={onStopMilvusClick} />
       </div>
     </section>
   );

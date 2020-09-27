@@ -163,31 +163,43 @@ ipcMain.on('installMilvus', (event, args) => {
 });
 
 ipcMain.on('startMilvus', (event, createConfig) => {
-  docker.run(
-    repoTag,
-    [],
-    process.stdout,
-    createConfig,
-    (err, data, container) => {
-      console.log('err', err, 'data', data, 'container', container);
+  docker.createContainer(
+    {
+      Image: repoTag,
+      ...createConfig,
+    },
+    (err, container) => {
       if (!!err) {
         const errInfo = JSON.stringify(err, null, 2);
         event.sender.send('startMilvusError', errInfo);
       } else {
-        event.sender.send('startMilvusDone', true);
+        container.start({}, (err, data) => {
+          if (!!err) {
+            const errInfo = JSON.stringify(err, null, 2);
+            event.sender.send('startMilvusError', errInfo);
+          } else {
+            event.sender.send('startMilvusDone', true);
+          }
+        });
       }
     }
   );
 });
 
-ipcMain.on('stopMilvus', (event, args) => {
+ipcMain.on('getContainerInfo', (event, args) => {
   docker.listContainers((err, containers) => {
-    containers.forEach((containerInfo) => {
-      if (containerInfo.Image === repoTag) {
-        docker.getContainer(containerInfo.Id).stop(() => {
-          app.exit(0);
-        });
+    containers.forEach((info) => {
+      if (info.Image === repoTag) {
+        event.sender.send('containerInfo', info);
       }
     });
+  });
+});
+
+ipcMain.on('stopMilvus', (event, id) => {
+  const container = docker.getContainer(id);
+  container.stop(() => {
+    container.remove();
+    app.exit(0);
   });
 });
