@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Alert from '../../components/alert';
 import Button from '../../components/button';
 
 import loader from '../../images/loader.png';
@@ -27,6 +28,7 @@ const InstallationPage = () => {
 
   // checking, checked, installing, installed
   const [installStatus, setInstallStatus] = useState('checking');
+  const [alertInfo, setAlertInfo] = useState(null);
   const hintMap = getInstallationHintMap();
 
   const detectNetwork = () => {
@@ -39,7 +41,9 @@ const InstallationPage = () => {
         monitorDockerInstallation();
       })
       .catch((e) => {
-        alert('There is something wrong with your Internet');
+        setAlertInfo({
+          content: 'There is something wrong with your Internet',
+        });
       });
   };
 
@@ -68,7 +72,9 @@ const InstallationPage = () => {
       if (!args) {
         detectMilvus();
       } else {
-        alert('Please install Docker first');
+        setAlertInfo({
+          content: 'Please install Docker first',
+        });
       }
     });
   };
@@ -135,8 +141,18 @@ const InstallationPage = () => {
     handleInstallError(ipcRenderer);
   };
 
+  const onAlertClose = () => {
+    setAlertInfo(null);
+  };
+
   return (
     <section className="install-wrapper">
+      <Alert
+        open={alertInfo !== null}
+        onClose={onAlertClose}
+        content={alertInfo && alertInfo.content}
+      />
+
       <div>
         {installStatus === 'checked' ? (
           <img className="install-img" src={logo} alt="logo" />

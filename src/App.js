@@ -1,6 +1,6 @@
 import React from 'react';
 import InstallationPage from './pages/installation';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import {
   CONFIG_ROUTE,
   ERROR_ROUTE,
