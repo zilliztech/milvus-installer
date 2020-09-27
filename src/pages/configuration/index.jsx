@@ -188,14 +188,14 @@ const ConfigurationPage = () => {
   const monitorStartMilvus = (ipcRenderer) => {
     ipcRenderer.on('startMilvusDone', (event, isDone) => {
       if (isDone) {
-        // setShowLoading(false);
+        setShowLoading(false);
         // move to finish page
         history.push('/finish');
       }
     });
 
     ipcRenderer.on('startMilvusError', (event, errInfo) => {
-      // setShowLoading(false);
+      setShowLoading(false);
       // move to err page
       history.push({
         pathname: '/error',
