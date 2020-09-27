@@ -28,13 +28,11 @@ jobs:
       - name: install jq macos
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          sudo brew update
           sudo brew install jq
 
       - name: install jq windows
         if: ${{ matrix.os == 'windows-latest'}}
         run: |
-          chocolatey update
           chocolatey install jq
 
       - name: change package.json
