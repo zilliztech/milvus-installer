@@ -21,6 +21,12 @@ jobs:
         with:
           node-version: 10
 
+      - name: change electon build name
+        run: |
+          mv package.json temp.json
+          jq -r '.build.appId |= "milvus-gpu-launcher"' temp.json > package.json
+          rm temp.json
+
       - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1
         with:
