@@ -1,6 +1,8 @@
 name: Build/release
 
-on: release
+on:
+  release:
+    types: [published]
 
 jobs:
   release:
@@ -19,7 +21,11 @@ jobs:
         with:
           node-version: 10
 
-      - name: Build/release Electron app
+      - name: change package.json
+        run: |
+          node changePackageJson.js milvus-gpu-launcher
+
+      - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
