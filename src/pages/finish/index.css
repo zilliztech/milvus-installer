@@ -1,0 +1,21 @@
+.finish-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+}
+
+.finish-img {
+  width: 160px;
+  height: 160px;
+
+  margin-right: 60px;
+}
+
+.finish-content {
+  color: #4fc4f9;
+  font-family: Roboto-Bold, Roboto;
+  font-weight: bold;
+  font-size: 40px;
+}

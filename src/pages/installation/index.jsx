@@ -82,8 +82,7 @@ const InstallationPage = () => {
         3. if already started, go to finish page, else go to config page
       */
       if (args) {
-        // history.push('/config');
-        checkWhetherMilvusStarted();
+        checkWhetherMilvusStarted(ipcRenderer);
       } else {
         setInstallStatus('checked');
       }
@@ -96,7 +95,13 @@ const InstallationPage = () => {
   };
 
   const monitorMilvusRunningStatus = (ipcRenderer) => {
-    ipcRenderer.on('');
+    ipcRenderer.on('checkMilvusStartDone', (event, isMilvusStart) => {
+      if (isMilvusStart) {
+        history.push('/finish');
+      } else {
+        history.push('/config');
+      }
+    });
   };
 
   const monitorInstallationProgress = (ipcRenderer) => {
