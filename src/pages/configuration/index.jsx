@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   IconButton,
   InputAdornment,
   makeStyles,
@@ -25,6 +26,14 @@ const useStyles = makeStyles({
     '& .MuiInput-underline:after': {
       borderBottomColor: '#4fc4f9',
     },
+  },
+  loading: {
+    color: '#4fc4f9',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -24,
+    marginLeft: -24,
   },
 });
 
@@ -144,6 +153,7 @@ const ConfigurationPage = () => {
       ? getStorage(STORAGE_CONFIGS)
       : getConfigInput()
   );
+  const [showLoading, setShowLoading] = useState(false);
   const history = useHistory();
 
   const onStartButtonClick = () => {
@@ -152,6 +162,7 @@ const ConfigurationPage = () => {
     const validConfigs = configs.filter((config) => config.value);
     const createConfig = getCreateOption(validConfigs);
     ipcRenderer.send('startMilvus', createConfig);
+    setShowLoading(true);
     monitorStartMilvus(ipcRenderer);
 
     // save configs
@@ -177,12 +188,14 @@ const ConfigurationPage = () => {
   const monitorStartMilvus = (ipcRenderer) => {
     ipcRenderer.on('startMilvusDone', (event, isDone) => {
       if (isDone) {
+        // setShowLoading(false);
         // move to finish page
         history.push('/finish');
       }
     });
 
     ipcRenderer.on('startMilvusError', (event, errInfo) => {
+      // setShowLoading(false);
       // move to err page
       history.push({
         pathname: '/error',
@@ -239,7 +252,14 @@ const ConfigurationPage = () => {
           ))}
         </form>
 
-        <Button label="Start Milvus" onButtonClick={onStartButtonClick} />
+        <Button
+          label="Start Milvus"
+          disabled={showLoading}
+          onButtonClick={onStartButtonClick}
+        />
+        {showLoading && (
+          <CircularProgress size={48} className={classes.loading} />
+        )}
       </div>
     </section>
   );
