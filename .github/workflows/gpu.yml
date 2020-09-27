@@ -28,7 +28,7 @@ jobs:
       - name: install jq macos
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          sudo brew install jq
+          brew install jq
 
       - name: install jq windows
         if: ${{ matrix.os == 'windows-latest'}}
