@@ -1,8 +1,9 @@
 name: Build/release
 
 on:
-  release:
-    types: [published]
+  push
+  # release:
+  #   types: [published]
 
 jobs:
   release:
@@ -40,7 +41,7 @@ jobs:
       - name: change package.json
         run: |
           mv package.json temp.json
-          jq -r '.build.appId |= "milvus-gpu-launcher"' temp.json > package.json
+          jq -r ".build.appId |= 'milvus-gpu-launcher'" temp.json > package.json
           rm temp.json
 
       - name: Build/release GPU Milvus
