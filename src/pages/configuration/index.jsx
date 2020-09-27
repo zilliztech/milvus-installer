@@ -10,6 +10,12 @@ import Button from '../../components/button';
 import logo from '../../images/logo.png';
 import './index.css';
 import { useHistory } from 'react-router-dom';
+import {
+  checkStorage,
+  getStorage,
+  setStorage,
+} from '../../shared/storage.util';
+import { STORAGE_CONFIGS } from '../../shared/constants';
 
 const useStyles = makeStyles({
   root: {
@@ -133,7 +139,11 @@ const getCreateOption = (configs) => {
 
 const ConfigurationPage = () => {
   const classes = useStyles();
-  const [configs, setConfigs] = useState(getConfigInput());
+  const [configs, setConfigs] = useState(
+    checkStorage(STORAGE_CONFIGS)
+      ? getStorage(STORAGE_CONFIGS)
+      : getConfigInput()
+  );
   const history = useHistory();
 
   const onStartButtonClick = () => {
@@ -143,6 +153,9 @@ const ConfigurationPage = () => {
     const createConfig = getCreateOption(validConfigs);
     ipcRenderer.send('startMilvus', createConfig);
     monitorStartMilvus(ipcRenderer);
+
+    // save configs
+    setStorage(STORAGE_CONFIGS, configs);
   };
 
   const onFileIconClick = (config) => {
