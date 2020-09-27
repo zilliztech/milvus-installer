@@ -21,19 +21,25 @@ jobs:
         with:
           node-version: 10
 
-      - name: change electon build name
+      - name: install jq ubuntu
         if: ${{ matrix.os === "ubuntu-latest" }}
         run: |
           sudo apt-get update
           sudo apt-get install jq
+
+      - name: install jq macos
         if: ${{ matrix.os === "macos-latest" }}
         run: |
           sudo brew update
           sudo brew install jq
+
+      - name: install jq windows
         if: ${{ matrix.os === "windows-latest" }}
         run: |
           chocolatey update
           chocolatey install jq
+
+      - name: change package.json
         run: |
           mv package.json temp.json
           jq -r '.build.appId |= "milvus-gpu-launcher"' temp.json > package.json
