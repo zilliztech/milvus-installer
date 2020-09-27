@@ -22,8 +22,19 @@ jobs:
           node-version: 10
 
       - name: change electon build name
+        if: ${{ matrix.os === "ubuntu-latest" }}
         run: |
+          sudo apt-get update
+          sudo apt-get install jq
+        if: ${{ matrix.os === "macos-latest" }}
+        run: |
+          sudo brew update
           sudo brew install jq
+        if: ${{ matrix.os === "windows-latest" }}
+        run: |
+          chocolatey update
+          chocolatey install jq
+        run: |
           mv package.json temp.json
           jq -r '.build.appId |= "milvus-cpu-launcher"' temp.json > package.json
           rm temp.json
