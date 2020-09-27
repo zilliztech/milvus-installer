@@ -23,6 +23,8 @@ jobs:
 
       - name: change electon build name
         run: |
+          sudo apt-get update
+          sudo apt-get install jq
           mv package.json temp.json
           jq -r '.build.appId |= "milvus-gpu-launcher"' temp.json > package.json
           rm temp.json
