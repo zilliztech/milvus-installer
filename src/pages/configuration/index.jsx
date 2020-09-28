@@ -204,7 +204,7 @@ const ConfigurationPage = () => {
       });
     });
 
-    ipcRenderer.on('moveFileError', (path) => {
+    ipcRenderer.on('moveFileError', (event, path) => {
       setAlertInfo({
         content: `Fail to download configuration file to ${path}, please download server_config.yaml file manually to this folder`,
       });

@@ -81,16 +81,8 @@ const moveFileToConfFolder = (dir) => {
   const sourcePath = path.join(process.cwd(), 'public/server_config.yaml');
   const targetPath = path.join(dir, 'server_config.yaml');
 
-  try {
-    if (!fs.existsSync(targetPath)) {
-      fs.copyFile(sourcePath, targetPath, (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    }
-  } catch (err) {
-    throw err;
+  if (!fs.existsSync(targetPath)) {
+    fs.copyFileSync(sourcePath, targetPath);
   }
 };
 
