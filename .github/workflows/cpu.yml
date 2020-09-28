@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: 10
 
-      - name: change package.json
+      - name: set cpu milvus
         run: |
-          node changePackageJson.js milvus-cpu-launcher
+          node setCpuGpu.js milvus-cpu-launcher
 
       - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1
