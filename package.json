@@ -36,11 +36,7 @@
           "target": "nsis"
         }
       ]
-    },
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ]
+    }
   },
   "scripts": {
     "react-start": "react-scripts start",
