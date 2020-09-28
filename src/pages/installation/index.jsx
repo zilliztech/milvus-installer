@@ -7,6 +7,8 @@ import loader from '../../images/loader.png';
 import logo from '../../images/logo.png';
 import './index.css';
 
+const { ipcRenderer } = window.require('electron');
+
 const getInstallationHintMap = (version) => {
   const map = {
     checking: 'checking environment',
@@ -19,7 +21,6 @@ const getInstallationHintMap = (version) => {
 };
 
 const detectDocker = () => {
-  const { ipcRenderer } = window.require('electron');
   ipcRenderer.send('detectDocker', 'start');
 };
 
@@ -30,17 +31,9 @@ const InstallationPage = () => {
   const [installStatus, setInstallStatus] = useState('checking');
   const [alertInfo, setAlertInfo] = useState(null);
   const [percent, setPercent] = useState(0);
-  const [hintMap, setHintMap] = useState(null);
 
-  useEffect(() => {
-    const { ipcRenderer } = window.require('electron');
-    ipcRenderer.send('getMilvusVersion', 'start');
-
-    ipcRenderer.on('milvusVersion', (event, version) => {
-      const hintMap = getInstallationHintMap(version);
-      setHintMap(hintMap);
-    });
-  }, []);
+  const version = ipcRenderer.sendSync('getMilvusVersion', 'start');
+  const hintMap = getInstallationHintMap(version);
 
   const detectNetwork = () => {
     // use baidu to test network
@@ -59,7 +52,6 @@ const InstallationPage = () => {
   };
 
   const detectMilvus = () => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('detectMilvus', 'start');
 
     monitorMilvusInstallation();
@@ -78,7 +70,6 @@ const InstallationPage = () => {
   }, []);
 
   const monitorDockerInstallation = () => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('dockerInstalled', (event, args) => {
       if (!args) {
         detectMilvus();
@@ -91,7 +82,6 @@ const InstallationPage = () => {
   };
 
   const monitorMilvusInstallation = () => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.on('milvusInstallation', (event, args) => {
       /* 
         1. check milvus installation
@@ -99,19 +89,19 @@ const InstallationPage = () => {
         3. if already started, go to finish page, else go to config page
       */
       if (args) {
-        checkWhetherMilvusStarted(ipcRenderer);
+        checkWhetherMilvusStarted();
       } else {
         setInstallStatus('checked');
       }
     });
   };
 
-  const checkWhetherMilvusStarted = (ipcRenderer) => {
+  const checkWhetherMilvusStarted = () => {
     ipcRenderer.send('checkMilvusStart', 'start');
-    monitorMilvusRunningStatus(ipcRenderer);
+    monitorMilvusRunningStatus();
   };
 
-  const monitorMilvusRunningStatus = (ipcRenderer) => {
+  const monitorMilvusRunningStatus = () => {
     ipcRenderer.on('checkMilvusStartDone', (event, isMilvusStart) => {
       if (isMilvusStart) {
         history.push('/finish');
@@ -121,7 +111,7 @@ const InstallationPage = () => {
     });
   };
 
-  const monitorInstallationProgress = (ipcRenderer) => {
+  const monitorInstallationProgress = () => {
     ipcRenderer.on('installMilvusProgress', (event, progress) => {
       if (!Number.isNaN(progress) && percent !== progress) {
         setPercent(progress);
@@ -134,7 +124,7 @@ const InstallationPage = () => {
     });
   };
 
-  const handleInstallError = (ipcRenderer) => {
+  const handleInstallError = () => {
     ipcRenderer.on('installMilvusError', (event, args) => {
       history.push({
         pathname: '/error',
@@ -148,16 +138,14 @@ const InstallationPage = () => {
   const onInstallButtonClick = () => {
     setInstallStatus('installing');
 
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('installMilvus', 'start');
 
-    monitorInstallationProgress(ipcRenderer);
-    handleInstallError(ipcRenderer);
+    monitorInstallationProgress();
+    handleInstallError();
   };
 
   const onAlertClose = () => {
     setAlertInfo(null);
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('stopApp', 'start');
   };
 

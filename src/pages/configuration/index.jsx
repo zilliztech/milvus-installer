@@ -5,7 +5,7 @@ import {
   makeStyles,
   TextField,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import Button from '../../components/button';
 import logo from '../../images/logo.png';
@@ -156,6 +156,7 @@ const getCreateOption = (configs, version) => {
 };
 
 const ConfigurationPage = () => {
+  const { ipcRenderer } = window.require('electron');
   const classes = useStyles();
   const [configs, setConfigs] = useState(
     checkStorage(STORAGE_CONFIGS)
@@ -163,39 +164,27 @@ const ConfigurationPage = () => {
       : getConfigInput()
   );
   const [showLoading, setShowLoading] = useState(false);
-  const [version, setVersion] = useState('');
   const history = useHistory();
-
-  useEffect(() => {
-    const { ipcRenderer } = window.require('electron');
-    ipcRenderer.send('getMilvusVersion', 'start');
-
-    ipcRenderer.on('milvusVersion', (event, version) => {
-      setVersion(version);
-    });
-  }, []);
+  const version = ipcRenderer.sendSync('getMilvusVersion', 'start');
 
   const onStartButtonClick = () => {
-    const { ipcRenderer } = window.require('electron');
-
     const validConfigs = configs.filter((config) => config.value);
     const createConfig = getCreateOption(validConfigs, version);
 
     ipcRenderer.send('startMilvus', createConfig);
     setShowLoading(true);
-    monitorStartMilvus(ipcRenderer);
+    monitorStartMilvus();
 
     // save configs
     setStorage(STORAGE_CONFIGS, configs);
   };
 
   const onFileIconClick = (config) => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('openFolder', config);
-    monitorFileSelect(ipcRenderer);
+    monitorFileSelect();
   };
 
-  const monitorFileSelect = (ipcRenderer) => {
+  const monitorFileSelect = () => {
     ipcRenderer.on('dirSelectDone', (event, config) => {
       const newConfigs = configs.map((c) =>
         c.type !== config.type ? c : config
@@ -205,7 +194,7 @@ const ConfigurationPage = () => {
     });
   };
 
-  const monitorStartMilvus = (ipcRenderer) => {
+  const monitorStartMilvus = () => {
     ipcRenderer.on('startMilvusDone', (event, isDone) => {
       if (isDone) {
         setShowLoading(false);

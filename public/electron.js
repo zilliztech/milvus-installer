@@ -67,24 +67,12 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.handle('perform-action', (event, ...args) => {
-  // ... do something on behalf of the renderer ...
-  console.log('perform-action', event, ...args);
-});
-
-// Receive and reply to synchronous message
-ipcMain.on('helloSync', (event, args) => {
-  console.log('helloSync', event, ...args);
-  //do something with args
-  event.returnValue = 'Hi, sync reply';
-});
-
 ipcMain.on('stopApp', (event, args) => {
   app.exit(0);
 });
 
 ipcMain.on('getMilvusVersion', (event, args) => {
-  event.sender.send('milvusVersion', version);
+  event.returnValue = version;
 });
 
 const moveFileToConfFolder = (dir) => {

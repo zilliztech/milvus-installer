@@ -4,27 +4,19 @@ import logo from '../../images/logo.png';
 import Button from '../../components/button';
 
 const FinishPage = () => {
-  const [versionInfo, setVersionInfo] = useState('');
+  const { ipcRenderer } = window.require('electron');
   const [url, setUrl] = useState('');
   const [containerId, setContainerId] = useState('');
+  const versionInfo = ipcRenderer.sendSync('getMilvusVersion', 'start');
 
   useEffect(() => {
-    const { ipcRenderer } = window.require('electron');
-    ipcRenderer.send('getMilvusVersion', 'start');
-
-    ipcRenderer.on('milvusVersion', (event, version) => {
-      setVersionInfo(version);
-    });
-  }, []);
-
-  useEffect(() => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('getContainerInfo', 'start');
 
-    getContainerInfo(ipcRenderer);
+    getContainerInfo();
+    // eslint-disable-next-line
   }, []);
 
-  const getContainerInfo = (ipcRenderer) => {
+  const getContainerInfo = () => {
     ipcRenderer.on('containerInfo', (event, container) => {
       const {
         Id,
@@ -43,7 +35,6 @@ const FinishPage = () => {
   };
 
   const onStopMilvusClick = () => {
-    const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('stopMilvus', containerId);
   };
 
