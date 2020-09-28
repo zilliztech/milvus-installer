@@ -180,7 +180,6 @@ ipcMain.on('installMilvus', (event, args) => {
 });
 
 ipcMain.on('startMilvus', (event, createConfig) => {
-  console.log('create config', createConfig);
   docker.createContainer(
     {
       Image: repoTag,
