@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: 10
 
-      - name: change package.json
+      - name: set gpu milvus
         run: |
-          node changePackageJson.js milvus-gpu-launcher
+          node setCpuGpu.js milvus-gpu-launcher
 
       - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1

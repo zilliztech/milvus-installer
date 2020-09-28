@@ -4,9 +4,18 @@ import logo from '../../images/logo.png';
 import Button from '../../components/button';
 
 const FinishPage = () => {
-  const versionInfo = 'Milvus 0.10.2';
+  const [versionInfo, setVersionInfo] = useState('');
   const [url, setUrl] = useState('');
   const [containerId, setContainerId] = useState('');
+
+  useEffect(() => {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('getMilvusVersion', 'start');
+
+    ipcRenderer.on('milvusVersion', (event, version) => {
+      setVersionInfo(version);
+    });
+  }, []);
 
   useEffect(() => {
     const { ipcRenderer } = window.require('electron');
