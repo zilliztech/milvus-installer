@@ -29,6 +29,7 @@ const InstallationPage = () => {
   // checking, checked, installing, installed
   const [installStatus, setInstallStatus] = useState('checking');
   const [alertInfo, setAlertInfo] = useState(null);
+  const [percent, setPercent] = useState(0);
   const hintMap = getInstallationHintMap();
 
   const detectNetwork = () => {
@@ -111,8 +112,10 @@ const InstallationPage = () => {
   };
 
   const monitorInstallationProgress = (ipcRenderer) => {
-    ipcRenderer.on('installMilvusProgress', (event, args) => {
-      // console.log('progress event', event, 'args', args);
+    ipcRenderer.on('installMilvusProgress', (event, progress) => {
+      if (!Number.isNaN(progress) && percent !== progress) {
+        setPercent(progress);
+      }
     });
 
     ipcRenderer.on('installMilvusDone', (event, args) => {
@@ -153,12 +156,14 @@ const InstallationPage = () => {
         content={alertInfo && alertInfo.content}
       />
 
-      <div>
+      <div className="install-progress">
         {installStatus === 'checked' ? (
           <img className="install-img" src={logo} alt="logo" />
         ) : (
           <img className="install-img-spin" src={loader} alt="loader" />
         )}
+
+        {percent !== 0 && <div className="install-percent">{percent}%</div>}
       </div>
 
       <div className="install-content">

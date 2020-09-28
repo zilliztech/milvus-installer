@@ -15,6 +15,22 @@
   justify-content: center;
 }
 
+.install-progress {
+  position: relative;
+}
+
+.install-percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: #4fc4f9;
+  font-weight: bold;
+  line-height: 20px;
+  font-family: RobotoMono-Bold, RobotoMono;
+}
+
 .install-img {
   width: 144px;
   height: 144px;
