@@ -1,9 +1,10 @@
 let fs = require("fs");
-console.log(process.argv[3], version);
+console.log(process.argv[3]);
 
 const name = process.argv[2];
 const tag = process.argv[3].split("/");
 const version = tag[tag.length - 1].substring(1);
+console.log(version);
 function changePackageJson(name) {
   //现将json文件读出来
   fs.readFile("./package.json", function (err, data) {
