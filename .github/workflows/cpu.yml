@@ -23,7 +23,7 @@ jobs:
 
       - name: set cpu milvus
         run: |
-          node setCpuGpu.js milvus-cpu-launcher ${GITHUB_REF#refs/*/}
+          node setCpuGpu.js milvus-cpu-launcher
 
       - name: Build/release GPU Milvus
         uses: samuelmeuli/action-electron-builder@v1
