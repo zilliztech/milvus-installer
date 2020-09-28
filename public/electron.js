@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const Docker = require('dockerode');
 const isDev = require('electron-is-dev');
 const path = require('path');
@@ -37,6 +37,8 @@ function createWindow() {
     // titleBarStyle: 'hidden'
   });
 
+  Menu.setApplicationMenu(null);
+
   // win.show();
 
   win.loadURL(
@@ -45,7 +47,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
@@ -147,7 +149,7 @@ ipcMain.on('detectMilvus', (event, args) => {
     });
 });
 
-const getProgress = (layers) => {
+const getProgress = (layers, lastPercent) => {
   const info = layers.reduce(
     (acc, cur) => {
       acc.current += Number(cur.current);
@@ -162,7 +164,7 @@ const getProgress = (layers) => {
       ? Math.floor((info.current / info.total) * 100)
       : 0;
 
-  return percent;
+  return percent > lastPercent ? percent : lastPercent;
 };
 
 //Receive and reply to asynchronous message
@@ -175,6 +177,7 @@ ipcMain.on('installMilvus', (event, args) => {
 
     docker.modem.followProgress(stream, onFinished, onProgress);
     let layers = [];
+    let lastPercent = 0;
 
     function onFinished(err, output) {
       event.sender.send('installMilvusDone', true);
@@ -197,7 +200,8 @@ ipcMain.on('installMilvus', (event, args) => {
         }
       }
 
-      const progress = getProgress(layers);
+      const progress = getProgress(layers, lastPercent);
+      lastPercent = progress;
 
       event && event.sender.send('installMilvusProgress', progress);
     }
