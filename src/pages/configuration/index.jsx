@@ -108,7 +108,7 @@ const getItemFromConfig = (type, value) => {
 const getCreateOption = (configs, version) => {
   const [, ver] = version.split(' ');
   let createConfig = {
-    name: `milvus_${ver}_cpu`,
+    name: `milvus_cpu_${ver}`,
     HostConfig: {
       PortBindings: {},
       Binds: [],
@@ -119,7 +119,7 @@ const getCreateOption = (configs, version) => {
     createConfig = {
       ...createConfig,
       gpus: 'all',
-      name: `milvus_${ver}_gpu`,
+      name: `milvus_gpu_${ver}`,
     };
   }
 

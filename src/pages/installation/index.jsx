@@ -122,7 +122,7 @@ const InstallationPage = () => {
 
   const monitorInstallationProgress = (ipcRenderer) => {
     ipcRenderer.on('installMilvusProgress', (event, args) => {
-      // console.log('progress event', event, 'args', args);
+      console.log('progress event', event, 'args', args);
     });
 
     ipcRenderer.on('installMilvusDone', (event, args) => {
@@ -143,16 +143,19 @@ const InstallationPage = () => {
   };
 
   const onInstallButtonClick = () => {
+    setInstallStatus('installing');
+
     const { ipcRenderer } = window.require('electron');
     ipcRenderer.send('installMilvus', 'start');
 
-    setInstallStatus('installing');
     monitorInstallationProgress(ipcRenderer);
     handleInstallError(ipcRenderer);
   };
 
   const onAlertClose = () => {
     setAlertInfo(null);
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('stopApp', 'start');
   };
 
   return (

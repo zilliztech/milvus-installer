@@ -79,6 +79,10 @@ ipcMain.on('helloSync', (event, args) => {
   event.returnValue = 'Hi, sync reply';
 });
 
+ipcMain.on('stopApp', (event, args) => {
+  app.exit(0);
+});
+
 ipcMain.on('getMilvusVersion', (event, args) => {
   event.sender.send('milvusVersion', version);
 });
@@ -176,6 +180,7 @@ ipcMain.on('installMilvus', (event, args) => {
 });
 
 ipcMain.on('startMilvus', (event, createConfig) => {
+  console.log('create config', createConfig);
   docker.createContainer(
     {
       Image: repoTag,
