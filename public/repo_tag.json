@@ -1,0 +1,6 @@
+{
+  "cpu": "milvusdb/milvus:0.10.2-cpu-d081520-8a2393",
+  "gpu": "milvusdb/milvus:0.10.2-gpu-d081520-8a2393",
+  "current": "milvusdb/milvus:0.10.2-gpu-d081520-8a2393",
+  "version": "Milvus 0.10.2"
+}

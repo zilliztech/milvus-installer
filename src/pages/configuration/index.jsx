@@ -5,7 +5,7 @@ import {
   makeStyles,
   TextField,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import Button from '../../components/button';
 import logo from '../../images/logo.png';
@@ -105,14 +105,23 @@ const getItemFromConfig = (type, value) => {
   return configCommandMap[type];
 };
 
-const getCreateOption = (configs) => {
+const getCreateOption = (configs, version) => {
+  const [, ver] = version.split(' ');
   let createConfig = {
-    name: 'milvus_cpu_0.10.2',
+    name: `milvus_${ver}_cpu`,
     HostConfig: {
       PortBindings: {},
       Binds: [],
     },
   };
+
+  if (version.includes('GPU')) {
+    createConfig = {
+      ...createConfig,
+      gpus: 'all',
+      name: `milvus_${ver}_gpu`,
+    };
+  }
 
   configs.forEach((config) => {
     const newConfig = getItemFromConfig(config.type, config.value);
@@ -154,13 +163,24 @@ const ConfigurationPage = () => {
       : getConfigInput()
   );
   const [showLoading, setShowLoading] = useState(false);
+  const [version, setVersion] = useState('');
   const history = useHistory();
+
+  useEffect(() => {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('getMilvusVersion', 'start');
+
+    ipcRenderer.on('milvusVersion', (event, version) => {
+      setVersion(version);
+    });
+  }, []);
 
   const onStartButtonClick = () => {
     const { ipcRenderer } = window.require('electron');
 
     const validConfigs = configs.filter((config) => config.value);
-    const createConfig = getCreateOption(validConfigs);
+    const createConfig = getCreateOption(validConfigs, version);
+
     ipcRenderer.send('startMilvus', createConfig);
     setShowLoading(true);
     monitorStartMilvus(ipcRenderer);

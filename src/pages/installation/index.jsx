@@ -7,11 +7,11 @@ import loader from '../../images/loader.png';
 import logo from '../../images/logo.png';
 import './index.css';
 
-const getInstallationHintMap = () => {
+const getInstallationHintMap = (version) => {
   const map = {
     checking: 'checking environment',
-    checked: 'install Milvus 0.10.2',
-    installing: 'installing Milvus 0.10.2',
+    checked: `install ${version}`,
+    installing: `installing ${version}`,
     installed: 'installed successfully',
   };
 
@@ -29,7 +29,17 @@ const InstallationPage = () => {
   // checking, checked, installing, installed
   const [installStatus, setInstallStatus] = useState('checking');
   const [alertInfo, setAlertInfo] = useState(null);
-  const hintMap = getInstallationHintMap();
+  const [hintMap, setHintMap] = useState(null);
+
+  useEffect(() => {
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.send('getMilvusVersion', 'start');
+
+    ipcRenderer.on('milvusVersion', (event, version) => {
+      const hintMap = getInstallationHintMap(version);
+      setHintMap(hintMap);
+    });
+  }, []);
 
   const detectNetwork = () => {
     // use baidu to test network
@@ -164,7 +174,9 @@ const InstallationPage = () => {
       <div className="install-content">
         <div>
           <div className="install-title">Milvus Launcher</div>
-          <div className="install-hint">{hintMap[installStatus]}</div>
+          <div className="install-hint">
+            {hintMap && hintMap[installStatus]}
+          </div>
         </div>
 
         <Button
