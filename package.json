@@ -38,9 +38,8 @@
       ]
     },
     "files": [
-      "build/**/*",
-      "resources/*",
-      "package.json"
+      "!**/node_modules/**/*",
+      "!*.js"
     ]
   },
   "scripts": {
