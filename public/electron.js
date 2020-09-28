@@ -8,7 +8,7 @@ const fs = require('fs');
 const childProcess = require('child_process');
 
 const getTagInfo = () => {
-  const dir = path.join(process.cwd(), 'public/repo_tag.json');
+  const dir = path.join(__dirname, 'repo_tag.json');
   const tagInfo = fs.readFileSync(dir, 'utf8');
   return JSON.parse(tagInfo);
 };
