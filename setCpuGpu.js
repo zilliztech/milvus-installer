@@ -1,7 +1,6 @@
 let fs = require("fs");
 
 const name = process.argv[2];
-
 function changePackageJson(name) {
   //现将json文件读出来
   fs.readFile("./package.json", function (err, data) {
