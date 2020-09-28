@@ -47,7 +47,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
@@ -205,12 +205,14 @@ ipcMain.on('installMilvus', (event, args) => {
 });
 
 ipcMain.on('startMilvus', (event, createConfig) => {
+  console.log('create config', createConfig);
   docker.createContainer(
     {
       Image: repoTag,
       ...createConfig,
     },
     (err, container) => {
+      console.log('container', container);
       if (!!err) {
         const errInfo = JSON.stringify(err, null, 2);
         event.sender.send('startMilvusError', errInfo);
