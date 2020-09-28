@@ -17,6 +17,7 @@ import {
   setStorage,
 } from '../../shared/storage.util';
 import { STORAGE_CONFIGS } from '../../shared/constants';
+import Alert from '../../components/alert';
 
 const useStyles = makeStyles({
   root: {
@@ -164,6 +165,7 @@ const ConfigurationPage = () => {
       : getConfigInput()
   );
   const [showLoading, setShowLoading] = useState(false);
+  const [alertInfo, setAlertInfo] = useState(null);
   const history = useHistory();
   const version = ipcRenderer.sendSync('getMilvusVersion', 'start');
 
@@ -191,6 +193,21 @@ const ConfigurationPage = () => {
       );
 
       setConfigs(newConfigs);
+    });
+
+    ipcRenderer.on('dirSelectError', (event, errorInfo) => {
+      history.push({
+        pathname: '/error',
+        state: {
+          info: errorInfo,
+        },
+      });
+    });
+
+    ipcRenderer.on('moveFileError', (path) => {
+      setAlertInfo({
+        content: `Fail to download configuration file to ${path}, please download server_config.yaml file manually to this folder`,
+      });
     });
   };
 
@@ -220,8 +237,17 @@ const ConfigurationPage = () => {
     config.value = value;
   };
 
+  const onAlertClose = () => {
+    setAlertInfo(null);
+  };
+
   return (
     <section className="config-wrapper">
+      <Alert
+        open={alertInfo !== null}
+        onClose={onAlertClose}
+        content={alertInfo && alertInfo.content}
+      />
       <img className="config-image" src={logo} alt="logo" />
       <div className="config-main">
         <h2 className="config-title">Configuration</h2>

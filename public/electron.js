@@ -47,7 +47,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
@@ -112,7 +112,11 @@ ipcMain.on('openFolder', (event, args) => {
         const [dir] = filePaths;
 
         if (type === 'milvus/conf') {
-          moveFileToConfFolder(dir);
+          try {
+            moveFileToConfFolder(dir);
+          } catch (err) {
+            event.sender.send('moveFileError', dir);
+          }
         }
 
         const newConfig = {
