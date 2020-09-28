@@ -7,6 +7,17 @@ const fs = require('fs');
 
 const childProcess = require('child_process');
 
+const getTagInfo = () => {
+  const dir = path.join(process.cwd(), 'public/repo_tag.json');
+  const tagInfo = fs.readFileSync(dir, 'utf8');
+  return JSON.parse(tagInfo);
+};
+
+const repoTag = getTagInfo().current;
+const version = repoTag.includes('cpu')
+  ? getTagInfo().version
+  : `${getTagInfo().version} (GPU)`;
+
 const socketPath =
   process.platform === 'win32'
     ? '//./pipe/docker_engine'
@@ -68,6 +79,14 @@ ipcMain.on('helloSync', (event, args) => {
   event.returnValue = 'Hi, sync reply';
 });
 
+ipcMain.on('stopApp', (event, args) => {
+  app.exit(0);
+});
+
+ipcMain.on('getMilvusVersion', (event, args) => {
+  event.sender.send('milvusVersion', version);
+});
+
 const moveFileToConfFolder = (dir) => {
   const sourcePath = path.join(process.cwd(), 'public/server_config.yaml');
   const targetPath = path.join(dir, 'server_config.yaml');
@@ -121,13 +140,11 @@ ipcMain.on('openFolder', (event, args) => {
 
 ipcMain.on('detectDocker', (event, args) => {
   const command =
-    process.platform === 'win32' ? 'where docker' : 'type -p docker';
+    process.platform === 'win32' ? 'where docker' : 'which docker';
   childProcess.exec(command, (err, stdout) => {
     event.sender.send('dockerInstalled', !!err);
   });
 });
-
-const repoTag = 'milvusdb/milvus:0.10.2-cpu-d081520-8a2393';
 
 ipcMain.on('detectMilvus', (event, args) => {
   docker
