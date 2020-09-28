@@ -32,7 +32,7 @@
     "win": {
       "icon": "resources/icon-win.png",
       "target": [
-        { 
+        {
           "target": "nsis"
         }
       ]
