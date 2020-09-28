@@ -205,14 +205,12 @@ ipcMain.on('installMilvus', (event, args) => {
 });
 
 ipcMain.on('startMilvus', (event, createConfig) => {
-  console.log('create config', createConfig);
   docker.createContainer(
     {
       Image: repoTag,
       ...createConfig,
     },
     (err, container) => {
-      console.log('container', container);
       if (!!err) {
         const errInfo = JSON.stringify(err, null, 2);
         event.sender.send('startMilvusError', errInfo);
