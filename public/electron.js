@@ -45,7 +45,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
@@ -67,24 +67,12 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.handle('perform-action', (event, ...args) => {
-  // ... do something on behalf of the renderer ...
-  console.log('perform-action', event, ...args);
-});
-
-// Receive and reply to synchronous message
-ipcMain.on('helloSync', (event, args) => {
-  console.log('helloSync', event, ...args);
-  //do something with args
-  event.returnValue = 'Hi, sync reply';
-});
-
 ipcMain.on('stopApp', (event, args) => {
   app.exit(0);
 });
 
 ipcMain.on('getMilvusVersion', (event, args) => {
-  event.sender.send('milvusVersion', version);
+  event.returnValue = version;
 });
 
 const moveFileToConfFolder = (dir) => {
@@ -159,6 +147,24 @@ ipcMain.on('detectMilvus', (event, args) => {
     });
 });
 
+const getProgress = (layers) => {
+  const info = layers.reduce(
+    (acc, cur) => {
+      acc.current += Number(cur.current);
+      acc.total += Number(cur.total);
+      return acc;
+    },
+    { current: 0, total: 0 }
+  );
+
+  const percent =
+    Object.keys(info).length > 0
+      ? Math.floor((info.current / info.total) * 100)
+      : 0;
+
+  return percent;
+};
+
 //Receive and reply to asynchronous message
 ipcMain.on('installMilvus', (event, args) => {
   docker.pull(repoTag, function (err, stream) {
@@ -167,14 +173,33 @@ ipcMain.on('installMilvus', (event, args) => {
       event.sender.send('installMilvusError', errInfo);
     }
 
-    event.sender.send('installMilvusProgress', 'start');
     docker.modem.followProgress(stream, onFinished, onProgress);
+    let layers = [];
 
     function onFinished(err, output) {
       event.sender.send('installMilvusDone', true);
     }
-    function onProgress(evt) {
-      event && event.sender.send('installMilvusProgress', evt);
+    function onProgress(detail) {
+      if (detail.status === 'Downloading') {
+        const existedLayers = layers.map((layer) => layer.id);
+        const newLayer = {
+          id: detail.id,
+          current: detail.progressDetail.current,
+          total: detail.progressDetail.total,
+        };
+        if (!existedLayers.includes(detail.id)) {
+          layers = [...layers, newLayer];
+        } else {
+          layers = [
+            ...layers.filter((layer) => layer.id !== detail.id),
+            newLayer,
+          ];
+        }
+      }
+
+      const progress = getProgress(layers);
+
+      event && event.sender.send('installMilvusProgress', progress);
     }
   });
 });
