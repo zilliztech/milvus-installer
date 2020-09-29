@@ -20,7 +20,7 @@
       "releaseType": "release"
     },
     "linux": {
-      "icon": "resources/icon.png",
+      "icon": "resources/icon.icns",
       "target": [
         "deb"
       ]
