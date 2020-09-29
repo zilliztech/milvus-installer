@@ -70,12 +70,12 @@ const InstallationPage = () => {
   }, []);
 
   const monitorDockerInstallation = () => {
-    ipcRenderer.on('dockerInstalled', (event, args) => {
-      if (!args) {
+    ipcRenderer.on('dockerInfo', (event, error) => {
+      if (!error) {
         detectMilvus();
       } else {
         setAlertInfo({
-          content: 'Please install Docker first',
+          content: 'Please install and run Docker first',
         });
       }
     });

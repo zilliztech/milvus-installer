@@ -130,10 +130,9 @@ ipcMain.on('checkFileExistence', (event, dir) => {
 });
 
 ipcMain.on('detectDocker', (event, args) => {
-  const command =
-    process.platform === 'win32' ? 'where docker' : 'which docker';
-  childProcess.exec(command, (err, stdout) => {
-    event.sender.send('dockerInstalled', !!err);
+  // check docker installation and running status
+  childProcess.exec('docker info', (err, stdout) => {
+    event.sender.send('dockerInfo', !!err);
   });
 });
 
