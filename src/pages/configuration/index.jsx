@@ -174,16 +174,32 @@ const ConfigurationPage = () => {
   const history = useHistory();
   const version = ipcRenderer.sendSync('getMilvusVersion', 'start');
 
+  const checkConfigExistence = (configs) => {
+    const configItem = configs.find((config) => config.type === 'milvus/conf');
+    if (!configItem) {
+      return true;
+    }
+    return ipcRenderer.sendSync('checkFileExistence', configItem.value);
+  };
+
   const onStartButtonClick = () => {
     const validConfigs = configs.filter((config) => config.value);
-    const createConfig = getCreateOption(validConfigs, version);
+    const isValid = checkConfigExistence(validConfigs);
 
-    ipcRenderer.send('startMilvus', createConfig);
-    setShowLoading(true);
-    monitorStartMilvus();
+    if (isValid) {
+      const createConfig = getCreateOption(validConfigs, version);
 
-    // save configs
-    setStorage(STORAGE_CONFIGS, configs);
+      ipcRenderer.send('startMilvus', createConfig);
+      setShowLoading(true);
+      monitorStartMilvus();
+
+      // save configs
+      setStorage(STORAGE_CONFIGS, configs);
+    } else {
+      setAlertInfo({
+        content: `Please download server_config.yaml file manually to config directory before start`,
+      });
+    }
   };
 
   const onFileIconClick = (config) => {

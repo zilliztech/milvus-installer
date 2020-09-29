@@ -13,10 +13,11 @@ import React from 'react';
 const useStyles = makeStyles({
   content: {
     display: 'flex',
-    alignItems: 'center',
+    fontSize: '16px',
   },
   icon: {
     color: 'orange',
+    marginTop: '4px',
     marginRight: '8px',
   },
 });
