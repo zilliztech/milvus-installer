@@ -197,7 +197,7 @@ const ConfigurationPage = () => {
       setStorage(STORAGE_CONFIGS, configs);
     } else {
       setAlertInfo({
-        content: `Please download server_config.yaml file manually to the folder before start`,
+        content: `Please download server_config.yaml file manually to config directory before start`,
       });
     }
   };
