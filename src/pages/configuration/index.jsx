@@ -6,9 +6,11 @@ import {
   TextField,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import Button from '../../components/button';
 import logo from '../../images/logo.png';
+import folderIcon from '../../images/icon-folder.svg';
 import './index.css';
 import { useHistory } from 'react-router-dom';
 import {
@@ -35,6 +37,9 @@ const useStyles = makeStyles({
     left: '50%',
     marginTop: -24,
     marginLeft: -24,
+  },
+  icon: {
+    color: 'rgba(0, 0, 0, 0.2)',
   },
 });
 
@@ -262,6 +267,14 @@ const ConfigurationPage = () => {
     setAlertInfo(null);
   };
 
+  const onFileClearClick = (config) => {
+    const newConfigs = configs.map((c) =>
+      c.type !== config.type ? c : { ...config, value: '' }
+    );
+
+    setConfigs(newConfigs);
+  };
+
   return (
     <section className="config-wrapper">
       <Alert
@@ -289,7 +302,18 @@ const ConfigurationPage = () => {
                             onFileIconClick(config);
                           }}
                         >
-                          <FolderOpenIcon />
+                          <img src={folderIcon} alt="foler icon" />
+                        </IconButton>
+
+                        <IconButton
+                          onClick={() => {
+                            onFileClearClick(config);
+                          }}
+                        >
+                          <DeleteIcon
+                            fontSize="small"
+                            className={classes.icon}
+                          />
                         </IconButton>
                       </InputAdornment>
                     ),
