@@ -110,6 +110,11 @@ const getCreateOption = (configs, version) => {
   const [, ver] = version.split(' ');
   let createConfig = {
     name: `milvus_cpu_${ver}`,
+    ExposedPorts: {
+      '19530/tcp': {},
+      '19121/tcp': {},
+    },
+
     HostConfig: {
       PortBindings: {},
       Binds: [],
