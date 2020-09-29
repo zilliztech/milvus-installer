@@ -80,7 +80,7 @@ const FinishPage = () => {
         <div>is running at</div>
         <div>{url}</div>
 
-        <Button label="stop Milvus" onButtonClick={onStopMilvusClick} />
+        <Button label="Stop Milvus" onButtonClick={onStopMilvusClick} />
       </div>
     </section>
   );
