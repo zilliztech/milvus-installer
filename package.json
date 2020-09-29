@@ -11,6 +11,13 @@
     "url": "https://www.milvus.io"
   },
   "build": {
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "runAfterFinish": true
+    },
+    "productName": "milvus-launcher",
     "appId": "milvus-launcher",
     "directories": {
       "output": "dist"
