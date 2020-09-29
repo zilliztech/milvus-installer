@@ -115,7 +115,7 @@ wal:
 #                      | double-quote required).                                    |            |                 |
 #----------------------+------------------------------------------------------------+------------+-----------------+
 cache:
-  cache_size: 4GB
+  cache_size: 1GB
   insert_buffer_size: 1GB
   preload_collection:
 
