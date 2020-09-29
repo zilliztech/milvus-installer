@@ -42,7 +42,7 @@ const FinishPage = () => {
         Ports,
       } = container;
       const port = Ports.find((port) => port.PrivatePort === 19530);
-      const url = `${IPAddress}:${port.PublicPort}`;
+      const url = `${IPAddress}:${port.PublicPort || port.PrivatePort}`;
       setContainerId(Id);
       setUrl(url);
     });
