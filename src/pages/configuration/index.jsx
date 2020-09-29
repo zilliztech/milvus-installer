@@ -187,11 +187,20 @@ const ConfigurationPage = () => {
     return ipcRenderer.sendSync('checkFileExistence', configItem.value);
   };
 
+  const checkPorts = (configs) => {
+    const validTypes = configs.map((config) => config.type);
+    return (
+      validTypes.includes('milvus/port') &&
+      validTypes.includes('milvus/httpPort')
+    );
+  };
+
   const onStartButtonClick = () => {
     const validConfigs = configs.filter((config) => config.value);
-    const isValid = checkConfigExistence(validConfigs);
+    const isConfigValid = checkConfigExistence(validConfigs);
+    const isPortsValid = checkPorts(validConfigs);
 
-    if (isValid) {
+    if (isConfigValid && isPortsValid) {
       const createConfig = getCreateOption(validConfigs, version);
 
       ipcRenderer.send('startMilvus', createConfig);
@@ -200,9 +209,13 @@ const ConfigurationPage = () => {
 
       // save configs
       setStorage(STORAGE_CONFIGS, configs);
-    } else {
+    } else if (!isConfigValid) {
       setAlertInfo({
         content: `Please download server_config.yaml file manually to config directory before start`,
+      });
+    } else if (!isPortsValid) {
+      setAlertInfo({
+        content: 'Please enter Milvus port and Http port first',
       });
     }
   };
