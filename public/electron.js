@@ -47,7 +47,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 app.whenReady().then(createWindow);
@@ -78,7 +78,7 @@ ipcMain.on('getMilvusVersion', (event, args) => {
 });
 
 const moveFileToConfFolder = (dir) => {
-  const sourcePath = path.join(process.cwd(), 'public/server_config.yaml');
+  const sourcePath = path.join(__dirname, 'server_config.yaml');
   const targetPath = path.join(dir, 'server_config.yaml');
 
   if (!fs.existsSync(targetPath)) {
@@ -122,6 +122,11 @@ ipcMain.on('openFolder', (event, args) => {
       const error = JSON.stringify(err, null, 2);
       event.sender.send('dirSelectError', error);
     });
+});
+
+ipcMain.on('checkFileExistence', (event, dir) => {
+  const configpath = path.join(dir, 'server_config.yaml');
+  event.returnValue = fs.existsSync(configpath);
 });
 
 ipcMain.on('detectDocker', (event, args) => {
@@ -252,16 +257,11 @@ ipcMain.on('checkMilvusStart', (event, args) => {
       const errInfo = JSON.stringify(errInfo, null, 2);
       event.sender.send('checkMilvusError', errInfo);
     } else {
-      docker.listContainers((err, containers) => {
-        if (!!err) {
-          const errInfo = JSON.stringify(errInfo, null, 2);
-        }
-        const isMilvusRunning = containers.some(
-          (container) => container.Image === repoTag
-        );
+      const isMilvusRunning = containers.some(
+        (container) => container.Image === repoTag
+      );
 
-        event.sender.send('checkMilvusStartDone', isMilvusRunning);
-      });
+      event.sender.send('checkMilvusStartDone', isMilvusRunning);
     }
   });
 });

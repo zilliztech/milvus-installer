@@ -25,10 +25,10 @@ const FinishPage = () => {
             bridge: { IPAddress },
           },
         },
-        Ports: [{ PublicPort }],
+        Ports,
       } = container;
-
-      const url = `${IPAddress}:${PublicPort}`;
+      const port = Ports.find((port) => port.PrivatePort === 19530);
+      const url = `${IPAddress}:${port.PublicPort}`;
       setContainerId(Id);
       setUrl(url);
     });
