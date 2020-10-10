@@ -20,24 +20,22 @@
     "productName": "milvus-launcher",
     "appId": "milvus-launcher",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "resources"
     },
     "publish": {
       "provider": "github",
       "releaseType": "release"
     },
     "linux": {
-      "icon": "resources/icon.png",
       "target": [
         "deb"
       ]
     },
     "mac": {
-      "icon": "resources/icon.png",
       "target": "dmg"
     },
     "win": {
-      "icon": "resources/icon-win.png",
       "target": [
         {
           "target": "nsis"

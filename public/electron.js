@@ -34,6 +34,7 @@ function createWindow() {
       nodeIntegration: true,
     },
     frame: true,
+    icon: path.join(__dirname, '../resources/icons/32x32.png'),
     // titleBarStyle: 'hidden'
   });
 
